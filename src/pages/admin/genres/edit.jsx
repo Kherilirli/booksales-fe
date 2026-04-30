@@ -1,30 +1,36 @@
-import { useState } from "react";
-import { createAuthor } from "../../../_services/authors";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { showGenre, updateGenre } from "../../../_services/genres";
 
-export default function AuthorCreate() {
+export default function GenreEdit() {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: "",
-        photo: null,
-        bio: "",
+        description: "",
+        _method: "PUT",
     });
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        const fetchData = async () => {
+            const [genresData] = await Promise.all([showGenre(id)]);
+
+            setFormData({
+                name: genresData.name,
+                description: genresData.description,
+                _method: "PUT",
+            });
+        };
+        fetchData();
+    }, [id]);
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
+        const { name, value } = e.target;
 
-        if (name === "photo") {
-            setFormData({
-                ...formData,
-                photo: files[0],
-            });
-        } else {
-            setFormData({
-                ...formData,
-                [name]: value,
-            });
-        }
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -37,11 +43,11 @@ export default function AuthorCreate() {
                 payload.append(key, formData[key]);
             }
 
-            await createAuthor(payload);
-            navigate("/admin/authors");
+            await updateGenre(id, payload);
+            navigate("/admin/genres");
         } catch (error) {
             console.log(error.response?.data);
-            alert("Gagal menambahkan author");
+            alert("Gagal menambahkan genre");
         }
     };
 
@@ -50,17 +56,17 @@ export default function AuthorCreate() {
             <section className="bg-gray-50 dark:bg-gray-900 min-h-screen p-6">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-                        Add Author
+                        Update Genre
                     </h1>
                     <p className="text-gray-500 dark:text-gray-400">
-                        Tambahkan penulis baru ke dalam sistem
+                        Edit genre ke dalam sistem
                     </p>
                 </div>
                 <div className="max-w-xl bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
                     <form onSubmit={handleSubmit}>
                         <div className="mb-5">
                             <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Nama
+                                Nama Genre
                             </label>
 
                             <input
@@ -68,38 +74,21 @@ export default function AuthorCreate() {
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                placeholder="Masukkan nama penulis"
+                                placeholder="Masukkan nama genre"
                                 required
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                             />
                         </div>
                         <div className="mb-5">
-                            <label
-                                for="photo"
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                            >
-                                Photo
-                            </label>
-                            <input
-                                type="file"
-                                name="photo"
-                                id="photo"
-                                onChange={handleChange}
-                                accept="image/"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full cursor-pointer dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                                required
-                            />
-                        </div>
-                        <div className="mb-5">
                             <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Bio
+                                Description
                             </label>
 
                             <textarea
-                                name="bio"
-                                value={formData.bio}
+                                name="description"
+                                value={formData.description}
                                 onChange={handleChange}
-                                placeholder="Masukkan bio"
+                                placeholder="Masukkan deskripsi"
                                 rows="4"
                                 required
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
@@ -119,13 +108,7 @@ export default function AuthorCreate() {
                                 transition duration-200
                             "
                             >
-                                Create Author
-                            </button>
-                            <button
-                                type="reset"
-                                className="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                            >
-                                Reset
+                                Save Data
                             </button>
                         </div>
                     </form>

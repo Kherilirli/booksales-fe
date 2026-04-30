@@ -1,15 +1,30 @@
-import { useState } from "react";
-import { createAuthor } from "../../../_services/authors";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { showAuthor, updateAuthor } from "../../../_services/authors";
 
-export default function AuthorCreate() {
+export default function AuthorEdit() {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: "",
         photo: null,
         bio: "",
+        _method: "PUT",
     });
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        const fetchData = async () => {
+            const [authorsData] = await Promise.all([showAuthor(id)]);
+
+            setFormData({
+                name: authorsData.name,
+                photo: authorsData.photo,
+                bio: authorsData.bio,
+                _method: "PUT",
+            });
+        };
+        fetchData();
+    }, [id]);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -31,17 +46,22 @@ export default function AuthorCreate() {
         e.preventDefault();
 
         try {
-            const payload = new FormData();
-
+            const playload = new FormData();
             for (const key in formData) {
-                payload.append(key, formData[key]);
+                if (key === "photo") {
+                    if (formData.photo instanceof File) {
+                        playload.append("photo", formData.photo);
+                    }
+                } else {
+                    playload.append(key, formData[key]);
+                }
             }
 
-            await createAuthor(payload);
+            await updateAuthor(id, playload);
             navigate("/admin/authors");
         } catch (error) {
-            console.log(error.response?.data);
-            alert("Gagal menambahkan author");
+            console.log(error);
+            alert("Error update book");
         }
     };
 
@@ -50,11 +70,8 @@ export default function AuthorCreate() {
             <section className="bg-gray-50 dark:bg-gray-900 min-h-screen p-6">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-                        Add Author
+                        Edit Author
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400">
-                        Tambahkan penulis baru ke dalam sistem
-                    </p>
                 </div>
                 <div className="max-w-xl bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
                     <form onSubmit={handleSubmit}>
@@ -69,7 +86,6 @@ export default function AuthorCreate() {
                                 value={formData.name}
                                 onChange={handleChange}
                                 placeholder="Masukkan nama penulis"
-                                required
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500"
                             />
                         </div>
@@ -87,7 +103,6 @@ export default function AuthorCreate() {
                                 onChange={handleChange}
                                 accept="image/"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full cursor-pointer dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                                required
                             />
                         </div>
                         <div className="mb-5">
@@ -119,13 +134,7 @@ export default function AuthorCreate() {
                                 transition duration-200
                             "
                             >
-                                Create Author
-                            </button>
-                            <button
-                                type="reset"
-                                className="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                            >
-                                Reset
+                                Save Data
                             </button>
                         </div>
                     </form>
