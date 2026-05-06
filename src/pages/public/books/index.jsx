@@ -10,6 +10,13 @@ export default function Books() {
     const [genres, setGenres] = useState([]);
     const [authors, setAuthors] = useState([]);
 
+    const formatRupiah = (number) => {
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+        }).format(number);
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             const [booksData, genresData, authorsData] = await Promise.all([
@@ -110,7 +117,7 @@ export default function Books() {
 
                                         <div className="mt-4 flex items-center justify-between gap-4">
                                             <p className="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">
-                                                RP{book.price}
+                                                {formatRupiah(book.price)}
                                             </p>
 
                                             <Link

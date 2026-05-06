@@ -16,6 +16,10 @@ import BookEdit from "./pages/admin/books/edit";
 import ShowBook from "./pages/public/books/show";
 import GenreEdit from "./pages/admin/genres/edit";
 import AuthorEdit from "./pages/admin/authors/edit";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import Unauthorized from "./pages/unauthorized";
+import TransactionHistory from "./pages/public/books/transactions";
+import AdminTransactions from "./pages/admin/transactions";
 
 function App() {
     return (
@@ -29,13 +33,28 @@ function App() {
                             <Route index element={<Books />} />
                             <Route path="show/:id" element={<ShowBook />} />
                         </Route>
+                            <Route
+                                path="transactions"
+                                element={
+                                    <ProtectedRoute>
+                                    <TransactionHistory />
+                                    </ProtectedRoute>
+                                }
+                            />
 
                         {/* Auth */}
                         <Route path="login" element={<Login />} />
                         <Route path="register" element={<Register />} />
 
                         {/* Admin */}
-                        <Route path="admin" element={<AdminLayout />}>
+                        <Route
+                            path="admin"
+                            element={
+                                <ProtectedRoute role="admin">
+                                    <AdminLayout />
+                                </ProtectedRoute>
+                            }
+                        >
                             <Route index element={<Dashboard />} />
 
                             <Route path="books">
@@ -43,6 +62,7 @@ function App() {
                                 <Route path="create" element={<BookCreate />} />
                                 <Route path="edit/:id" element={<BookEdit />} />
                             </Route>
+
                             <Route path="genres">
                                 <Route index element={<AdminGenres />} />
                                 <Route
@@ -54,6 +74,7 @@ function App() {
                                     element={<GenreEdit />}
                                 />
                             </Route>
+
                             <Route path="authors">
                                 <Route index element={<AdminAuthors />} />
                                 <Route
@@ -65,7 +86,11 @@ function App() {
                                     element={<AuthorEdit />}
                                 />
                             </Route>
+                            <Route path="transactions">
+                                <Route index element={<AdminTransactions />} />
+                            </Route>
                         </Route>
+                        <Route path="unauthorized" element={<Unauthorized />} />
                     </Route>
                 </Routes>
             </BrowserRouter>

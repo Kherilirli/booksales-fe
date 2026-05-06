@@ -53,10 +53,15 @@ export default function Login() {
     }
 
     useEffect(() => {
-        if(token && decodedToken && decodedToken.success) {
-            navigate("/admin")
+        const user = JSON.parse(localStorage.getItem("userInfo"))
+
+        if (token && user) {
+            navigate(user.role === "admin" ? "/admin" : "/")
         }
-    }, [token, decodedToken, navigate])
+    }, [token, navigate])
+
+    console.log(decodedToken);
+    
 
   return (
     <>
