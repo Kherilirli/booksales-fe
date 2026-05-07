@@ -1,6 +1,7 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logout, useDecodeToken } from "../_services/auth";
 import { useEffect } from "react";
+import Footer from "../components/footer";
 
 export default function AdminLayout() {
     const navigate = useNavigate();
@@ -331,6 +332,9 @@ export default function AdminLayout() {
                         <Outlet />
                     </div>
                 </main>
+                <footer className="md:ml-64">
+                    <Footer />
+                </footer>
             </div>
         </>
     );

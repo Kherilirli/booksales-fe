@@ -25,75 +25,70 @@ function App() {
     return (
         <>
             <BrowserRouter>
-                <Routes>
-                    <Route element={<PublicLayout />}>
-                        {/* Public */}
-                        <Route index element={<Home />} />
-                        <Route path="books">
-                            <Route index element={<Books />} />
-                            <Route path="show/:id" element={<ShowBook />} />
-                        </Route>
-                            <Route
-                                path="transactions"
-                                element={
-                                    <ProtectedRoute>
-                                    <TransactionHistory />
-                                    </ProtectedRoute>
-                                }
-                            />
+            <Routes>
+                {/* Public */}
+                <Route
+                    element={
+                        <ProtectedRoute role="customer">
+                            <PublicLayout />
+                        </ProtectedRoute>
+                    }
+                >
+                    <Route index element={<Home />} />
 
-                        {/* Auth */}
-                        <Route path="login" element={<Login />} />
-                        <Route path="register" element={<Register />} />
-
-                        {/* Admin */}
-                        <Route
-                            path="admin"
-                            element={
-                                <ProtectedRoute role="admin">
-                                    <AdminLayout />
-                                </ProtectedRoute>
-                            }
-                        >
-                            <Route index element={<Dashboard />} />
-
-                            <Route path="books">
-                                <Route index element={<AdminBooks />} />
-                                <Route path="create" element={<BookCreate />} />
-                                <Route path="edit/:id" element={<BookEdit />} />
-                            </Route>
-
-                            <Route path="genres">
-                                <Route index element={<AdminGenres />} />
-                                <Route
-                                    path="create"
-                                    element={<GenreCreate />}
-                                />
-                                <Route
-                                    path="edit/:id"
-                                    element={<GenreEdit />}
-                                />
-                            </Route>
-
-                            <Route path="authors">
-                                <Route index element={<AdminAuthors />} />
-                                <Route
-                                    path="create"
-                                    element={<AuthorCreate />}
-                                />
-                                <Route
-                                    path="edit/:id"
-                                    element={<AuthorEdit />}
-                                />
-                            </Route>
-                            <Route path="transactions">
-                                <Route index element={<AdminTransactions />} />
-                            </Route>
-                        </Route>
-                        <Route path="unauthorized" element={<Unauthorized />} />
+                    <Route path="books">
+                        <Route index element={<Books />} />
+                        <Route path="show/:id" element={<ShowBook />} />
                     </Route>
-                </Routes>
-            </BrowserRouter>
+
+                    <Route
+                        path="transactions"
+                        element={<TransactionHistory />}
+                    />
+                </Route>
+
+                {/* Auth */}
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+
+                {/* Admin */}
+                <Route
+                    path="admin"
+                    element={
+                        <ProtectedRoute role="admin">
+                            <AdminLayout />
+                        </ProtectedRoute>
+                    }
+                >
+                    <Route index element={<Dashboard />} />
+
+                    <Route path="books">
+                        <Route index element={<AdminBooks />} />
+                        <Route path="create" element={<BookCreate />} />
+                        <Route path="edit/:id" element={<BookEdit />} />
+                    </Route>
+
+                    <Route path="genres">
+                        <Route index element={<AdminGenres />} />
+                        <Route path="create" element={<GenreCreate />} />
+                        <Route path="edit/:id" element={<GenreEdit />} />
+                    </Route>
+
+                    <Route path="authors">
+                        <Route index element={<AdminAuthors />} />
+                        <Route path="create" element={<AuthorCreate />} />
+                        <Route path="edit/:id" element={<AuthorEdit />} />
+                    </Route>
+
+                    <Route path="transactions">
+                        <Route index element={<AdminTransactions />} />
+                    </Route>
+                </Route>
+
+                {/* Unauthorized */}
+                <Route path="unauthorized" element={<Unauthorized />} />
+            </Routes>
+        </BrowserRouter>
         </>
     );
 }
